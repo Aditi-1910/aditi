@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+      font-family: sans-serif;
+    }
+     body {
+      background: url("https://e0.pxfuel.com/wallpapers/708/358/desktop-wallpaper-clouds-and-sunset-sky-sea-of-clouds-thumbnail.jpg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      height: 600px;
+    } 
+    .container {
+      width: 500px;
+      margin: auto;
+    }
+    .container #size {
+      font-size: 40px;
+      padding: 30px;
+    }
+    .container form {
+      display: flex;
+    }
+    input {
+      width: 300px;
+      padding: 10px;
+      margin-left: 30px;
+    }
+    button {
+      background-color: rgb(12, 111, 147);
+      width: 100px;
+      padding: 10px;
+      border: none;
+      color: white;
+      font-size: 20px;
+    }
+    .main {
+      width: 180px;
+      height: 180px;
+      padding: 20px;
+      background-color: white;
+      margin-top: 20px;
+      margin-left: 30px;
+      border: 5px double rgb(7, 7, 104);
+    }
+    .main h4 {
+      font-size: 30px;
+    }
+    .main h1 {
+      color: rgb(9, 7, 96);
+      padding: 15px;
+      font-size: 40px;
+    }
+    .main img {
+      background-color: aquamarine;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <h1 id="size">Weather Application</h1>
+      <form action="">
+        <input type="text" placeholder="Enter City Name" name="city" required />
+        <button>Save</button>
+      </form>
+      <div class="main" id="response"></div>
+    </div>
+  </body>
+  <script>
+    let form1 = document.querySelector("form");
+    let response = document.querySelector("#response");
+    response.style.display = "none";
+    form1.addEventListener("submit", (e) => {
+      e.preventDefault();
+      let cityname = e.target.city.value;
+      console.log("ahi",cityname);
+      let api = `https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=4d8fb5b93d4af21d66a2948710284366&units=metric`;
+      fetch (api)
+        .then((ress) => {
+            console.log(ress);
+          return ress.json();
+        })
+        .then((data) => {
+           // console.log("as",data);
+          // destructure
+          response.style.display = "block";
+
+          if (data.cod == "404" || data.cod == "400") {
+            response.innerHTML = "City Not FOUND";
+          } else {
+            let { name, main, weather, sys } = data;
+            //   using these need not write data key
+
+             response.innerHTML = `<h4>${data.name} <span>${data.sys.country}</span></h4>
+             <h1>${data.main.temp}°</h1>
+             <img src="https://api.openweathermap.org/img/w/${data.weather[0].icon}.png" alt="" />
+             <p>${data.weather[0].description}</p>`;
+            response.innerHTML = `<h4>${name} <span>${sys.country}</span></h4>
+            <h1>${main.temp}°</h1>
+            <img src="https://api.openweathermap.org/img/w/${weather[0].icon}.png" alt="" />
+            <p>${weather[0].description}</p>`;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  </script>
+</html>
